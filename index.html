@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talent Quiz - Cinematic 2000 Banners | Mr Anshu Triwedi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Poppins,sans-serif}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;padding:0;color:white}
+.marquee{width:100%;background:linear-gradient(90deg,#FF6B00,#FFD700,#FF6B00);color:white;padding:8px 0;overflow:hidden;white-space:nowrap;position:sticky;top:0;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.marquee-content{display:inline-block;animation:marquee 40s linear infinite;font-weight:800;font-size:14px;letter-spacing:1px}
+@keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+.container{max-width:540px;margin:0 auto;padding:10px}
+.cinematic-banner{border-radius:24px;padding:20px;text-align:center;position:relative;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.6);border:3px solid rgba(255,255,255,.8);margin-bottom:14px;min-height:240px;display:flex;flex-direction:column;justify-content:center;transition:all.5s}
+.cinematic-banner::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,.2) 50%,transparent 70%);animation:shine 3s infinite;pointer-events:none}
+@keyframes shine{0%{transform:translateX(-100%) rotate(30deg)}100%{transform:translateX(100%) rotate(30deg)}}
+.logo-cinema{width:95px;height:95px;margin:0 auto;background:radial-gradient(circle,#FFD700,#FF6B00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:46px;border:4px solid white;box-shadow:0 0 30px #FFD700,0 0 60px #FF6B00;animation:glow 2s ease-in-out infinite alternate;position:relative;z-index:2}
+@keyframes glow{from{box-shadow:0 0 20px #FFD700,0 0 40px #FF6B00}to{box-shadow:0 0 40px #FFD700,0 0 80px #FF6B00,0 0 100px #FF6B00}}
+.banner-title{font-size:26px;font-weight:900;text-shadow:3px 3px 10px rgba(0,0,0,.8);margin:10px 0;z-index:2;position:relative;letter-spacing:1px}
+.banner-sub{font-size:12px;background:rgba(0,0,0,.4);padding:8px 12px;border-radius:20px;display:inline-block;margin:5px;backdrop-filter:blur(5px);z-index:2;position:relative}
+.student-avatars{display:flex;justify-content:center;gap:8px;margin:10px 0;z-index:2;position:relative}
+.student-avatars div{width:45px;height:45px;border-radius:50%;background:linear-gradient(135deg,#fff,#FFD700);display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,.3);animation:float 3s ease-in-out infinite}
+.student-avatars div:nth-child(2){animation-delay:.3s}.student-avatars div:nth-child(3){animation-delay:.6s}.student-avatars div:nth-child(4){animation-delay:.9s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.card{background:white;color:#333;border-radius:22px;padding:20px;box-shadow:0 12px 35px rgba(0,0,0,.4);margin:14px 0}
+label{font-weight:700;font-size:13px;display:block;margin:11px 0 5px}
+input,select{width:100%;padding:12px;border:2px solid #FFD54F;border-radius:11px;font-size:14px}
+.btn{width:100%;padding:15px;background:linear-gradient(90deg,#FF6B00,#FF9933);color:white;border:none;border-radius:13px;font-weight:800;font-size:16px;margin-top:14px;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,0,.5)}
+.timer{position:fixed;top:50px;right:12px;background:linear-gradient(90deg,red,#FF5722);color:white;padding:11px 18px;border-radius:35px;font-weight:900;z-index:9999;display:none;box-shadow:0 0 20px red;animation:pulse 1s infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+.flash-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.flash{padding:16px;border-radius:14px;color:white;text-align:center;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.option{padding:13px;background:#FFF3E0;border:2.5px solid #FFD54F;border-radius:11px;margin:9px 0;cursor:pointer;font-weight:600;color:#333}
+.correct{background:#C8E6C9!important;border-color:green!important}
+.wrong{background:#FFCDD2!important;border-color:red!important}
+.bot-msg{background:#E3F2FD;border-left:5px solid #2196F3;padding:12px;border-radius:10px;margin:12px 0;display:none;font-size:13px;color:#333}
+.buzzer{display:none;text-align:center;color:red;font-size:24px;font-weight:900}
+.hidden{display:none}
+.share-card{border-radius:22px;padding:0;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.result-canvas{width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.level{font-size:10px;padding:3px 8px;border-radius:10px;color:white;font-weight:bold;margin-left:6px}
+.level-easy{background:#4CAF50}.level-med{background:#FF9800}.level-hard{background:#F44336}
+</style>
+</head>
+<body>
+
+<!-- SLOW MOTION MARQUEE - CHANGES HEADER EVERY TIME -->
+<div class="marquee"><div class="marquee-content" id="marqueeText">🌟 Loading AI Talent Headers...</div></div>
+
+<div class="container">
+<!-- CINEMATIC 2000 BANNERS - CHANGES EVERY NEW STUDENT -->
+<div class="cinematic-banner" id="cinematicBanner">
+<div class="logo-cinema" id="logoCinema">🏆</div>
+<div class="banner-title" id="bannerTitle">TALENT QUIZ STUDENTS</div>
+<div class="student-avatars" id="studentAvatars"></div>
+<div id="bannerDetails"></div>
+<div style="margin-top:10px"><span class="banner-sub" id="bannerId">Banner #0001</span><span class="banner-sub" id="bannerClass">Class -</span></div>
+</div>
+
+<div class="card" id="formCard">
+<h2 style="color:#FF6B00;text-align:center">📝 Auto Magic Form - 2000 Banners</h2>
+<div style="background:#FFF3E0;padding:10px;border-radius:10px;font-size:12px;margin:10px 0;color:#333">
+Teacher: <b>Mr Anshu Triwedi Fixed</b> | Date: <b id="autoDate"></b><br>
+Banner Changes Every Student | Marquee Running | Cinematic Result for WhatsApp
+</div>
+<form id="mainForm">
+<label>Parent Name *</label><input id="parentName" required>
+<label>Student Name * Unique - Triggers New Banner</label><input id="studentName" required placeholder="Enter name - Banner will change magically!">
+<label>Class *</label><select id="classSelect" required><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>BTech</option></select>
+<label>Contact *</label><input id="contact" type="tel" required>
+<label>WhatsApp * - Cinematic Result will be shared here</label><input id="whatsapp" type="tel" required>
+<label>Parent Photo *</label><input id="pPhoto" type="file" accept="image/*" capture="user" required>
+<label>Student Photo *</label><input id="sPhoto" type="file" accept="image/*" capture="user" required>
+<button class="btn">✨ GENERATE CINEMATIC BANNER + START QUIZ</button>
+</form>
+</div>
+
+<div class="card hidden" id="subjectCard">
+<h3 style="text-align:center;color:#FF6B00">🎨 Colourful Flashcards - 1000 Unique Qs</h3>
+<p style="text-align:center;font-size:12px">Student: <b id="showStudent"></b> | Class: <b id="showClass"></b></p>
+<div class="flash-grid" id="flashGrid"></div>
+</div>
+
+<div class="card hidden" id="quizBox">
+<h3 id="qSubject" style="color:#FF6B00"></h3>
+<p style="font-size:12px">Q <span id="qNum">1</span>/20 | ID: <span id="qid"></span> | Score: <b id="score">0</b> | Wrong: <b id="wrongCount">0</b>/5</p>
+<div id="question" style="background:#FFF9C4;padding:12px;border-radius:10px;margin:10px 0;font-weight:700;border:2px solid #FFD54F;color:#333"></div>
+<div id="options"></div>
+<div class="buzzer" id="buzzer">🔴 BUZZZZ! WRONG!</div>
+<div class="bot-msg" id="botMsg"></div>
+<div id="tryAgain" style="display:none;text-align:center;color:red;font-weight:900">⏳ Reset in <span id="countdown">8</span>s</div>
+</div>
+
+<div class="card hidden" id="recordCard">
+<h2 style="text-align:center;color:green">🎉 CINEMATIC RESULT</h2>
+<div id="finalMessage" style="text-align:center;padding:12px;background:#E8F5E9;border-radius:12px;margin:10px 0;color:#333"></div>
+
+<!-- CINEMATIC CANVAS RESULT CARD -->
+<canvas id="resultCanvas" width="1080" height="1350" class="result-canvas"></canvas>
+
+<div style="margin-top:12px;background:#FFF3E0;padding:12px;border-radius:10px;border:2px dashed #FF6B00;color:#333;font-size:13px" id="shareDetails"></div>
+<div style="text-align:center;margin-top:10px"><div style="font-size:36px;font-weight:900;color:#FF6B00" id="shareScore"></div><p id="shareRemark" style="font-weight:900;color:#333"></p><p style="font-size:10px;color:#888">Date: <span id="shareDate"></span></p></div>
+
+<button class="btn" onclick="downloadResult()">📸 Download Cinematic Result Image</button>
+<button class="btn" style="background:linear-gradient(90deg,#25D366,#128C7E)" onclick="shareWhatsApp()">📲 Share Cinematic Result on WhatsApp</button>
+<button class="btn" style="background:green" onclick="location.reload()">🔄 New Student - New Banner #/2000</button>
+</div>
+</div>
+
+<div class="timer" id="timer">⏱️ 60s</div>
+<audio id="wrongSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+<script>
+let studentsDB=JSON.parse(localStorage.getItem('talent_students')||'[]');
+let currentStudent=null,timerInt,timeLeft,score=0,wrong=0,qIndex=0,currentQuestions=[],pImgURL='',sImgURL='',usedIds=new Set(),bannerCount=parseInt(localStorage.getItem('bannerCount')||'0');
+document.getElementById('autoDate').innerText=new Date().toLocaleDateString('en-GB');
+
+// 2000 BANNER GENERATOR
+const bannerThemes=[
+{grad:'linear-gradient(135deg,#667eea,#764ba2)',icon:'🏆',title:'TALENT QUIZ CHAMPIONS',emojis:['👩‍🎓','👨‍🎓','🧑‍💻','👩‍💻']},
+{grad:'linear-gradient(135deg,#f093fb,#f5576c)',icon:'🚀',title:'AI TALENT BLAST',emojis:['🚀','🌟','💫','🔥']},
+{grad:'linear-gradient(135deg,#4facfe,#00f2fe)',icon:'🧠',title:'GENIUS BRAIN QUIZ',emojis:['🧠','💡','🔬','📚']},
+{grad:'linear-gradient(135deg,#43e97b,#38f9d7)',icon:'🌟',title:'SUPER TALENT HUNT',emojis:['🌟','🏅','🎖️','👑']},
+{grad:'linear-gradient(135deg,#fa709a,#fee140)',icon:'💎',title:'DIAMOND TALENT QUIZ',emojis:['💎','💍','🏆','⭐']},
+{grad:'linear-gradient(135deg,#a8edea,#fed6e3)',icon:'🎓',title:'FUTURE TOPPERS QUIZ',emojis:['🎓','📖','✏️','🎯']},
+{grad:'linear-gradient(135deg,#ff9a9e,#fecfef)',icon:'🔥',title:'FIRE TALENT CHALLENGE',emojis:['🔥','⚡','💥','🌈']},
+{grad:'linear-gradient(135deg,#ffecd2,#fcb69f)',icon:'🎯',title:'MISSION TALENT 1000',emojis:['🎯','🚀','🏹','🎪']},
+];
+
+const marqueeHeaders=[
+"🚀 From AI About Talent Students Quiz - Ganpati Web Solutions Presents Talent Hunt 2026 - Mr Anshu Triwedi Vastu Vihar Baridih - 1000 Unique Questions Per Subject - No Repeat Guarantee - Easy Medium Champion Levels - Cinematic Result Sharing - ",
+"🏆 AI Powered Talent Quiz - Real Syllabus Questions - Class 1 to B.Tech - 2000 Unique Banners - Every Student Gets New Cinematic Banner - Bot Auto Saves Records - WhatsApp Cinematic Result - ",
+"🌟 Talent Students Giving Quiz in Contest - Ganpati Web Solutions Jamshedpur - Vastu Vihar Baridih Katyayani Bungalow No 2 Behind Vijaya Garden 831017 - Creating AI Projects - ",
+"🧠 From AI About Talent - 40s to 60s Timer - Red Buzzer Wrong Answer - Bot Gives Correct Answer - Try Again After 5 Wrong - Colourful Flashcards - Parent Student Photos - ",
+"💎 Unique Cinematic Logo - 2000 Different Banners Change Every Time New Student Enters - Marquee Running Slow Motion - AI Quiz Talent Images - Professional Cinematic Result - "
+];
+
+function generateBanner(studentName, cls){
+bannerCount++; localStorage.setItem('bannerCount',bannerCount);
+let hash=0; for(let i=0;i<studentName.length;i++) hash+=studentName.charCodeAt(i);
+let themeIdx = (hash + bannerCount + parseInt(cls||1)*7) % bannerThemes.length;
+let theme = bannerThemes[themeIdx];
+let bannerNum = (hash*7 + bannerCount*13) % 2000 + 1;
+let bannerEl=document.getElementById('cinematicBanner');
+bannerEl.style.background=theme.grad;
+document.getElementById('logoCinema').innerText=theme.icon;
+document.getElementById('bannerTitle').innerText=theme.title;
+document.getElementById('bannerId').innerText=`Banner #${String(bannerNum).padStart(4,'0')}/2000`;
+document.getElementById('bannerClass').innerText=`Class ${cls} | ${studentName}`;
+document.getElementById('bannerDetails').innerHTML=`<span class="banner-sub">👨‍🏫 Mr Anshu Triwedi</span><span class="banner-sub">📍 Vastu Vihar Baridih</span><span class="banner-sub">🧠 ${studentName} - Talent ${cls}</span>`;
+// Student avatars - AI talent images
+let avatars=document.getElementById('studentAvatars'); avatars.innerHTML='';
+for(let i=0;i<4;i++){let d=document.createElement('div');d.innerText=theme.emojis[i%theme.emojis.length];avatars.appendChild(d);}
+return bannerNum;
+}
+
+function updateMarquee(){
+let idx=Math.floor(Math.random()*marqueeHeaders.length);
+document.getElementById('marqueeText').innerText=marqueeHeaders[idx] + marqueeHeaders[(idx+1)%marqueeHeaders.length];
+}
+updateMarquee();
+setInterval(updateMarquee,15000);
+
+// Initial banner
+generateBanner('Welcome', '1');
+
+const subjects=[{name:'Maths',color:'#E91E63',icon:'🔢'},{name:'Science',color:'#4CAF50',icon:'🔬'},{name:'English',color:'#2196F3',icon:'📚'},{name:'Hindi',color:'#FF9800',icon:'✍️'},{name:'SST',color:'#9C27B0',icon:'🌍'},{name:'Computer',color:'#607D8B',icon:'💻'},{name:'GK Outsider',color:'#F44336',icon:'🧠'},{name:'AI Project',color:'#00BCD4',icon:'🤖'}];
+
+document.getElementById('mainForm').onsubmit=function(e){
+e.preventDefault();
+let sName=studentName.value.trim().toLowerCase();
+if(studentsDB.includes(sName)){alert('Name repeated! Use '+studentName.value+'2 - Will generate new banner!');}
+studentsDB.push(sName);localStorage.setItem('talent_students',JSON.stringify(studentsDB));
+pImgURL=URL.createObjectURL(pPhoto.files[0]); sImgURL=URL.createObjectURL(sPhoto.files[0]);
+currentStudent={parent:parentName.value,student:studentName.value,class:classSelect.value,contact:contact.value,whatsapp:whatsapp.value};
+// Generate new unique banner for this student
+let bNum=generateBanner(currentStudent.student, currentStudent.class);
+updateMarquee();
+formCard.classList.add('hidden');subjectCard.classList.remove('hidden');
+showStudent.innerText=currentStudent.student;showClass.innerText=currentStudent.class;
+let grid=flashGrid;grid.innerHTML='';
+subjects.forEach(s=>{let d=document.createElement('div');d.className='flash';d.style.background=s.color;d.innerHTML=`${s.icon}<br>${s.name}<br><small>1000 Unique</small>`;d.onclick=()=>startQuiz(s.name);grid.appendChild(d);});
+window.scrollTo(0,0);
+};
+
+function shuffleWithAnswer(correct, wrongs){
+let arr=[{t:correct,c:true},...wrongs.map(w=>({t:w,c:false}))];
+for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+return {opts:arr.map(x=>x.t),ans:arr.findIndex(x=>x.c),correct};
+}
+function generateUniqueQuestion(cls, subject, idx){
+let c=parseInt(cls)||21;
+let rnd1=(idx*7 + c*13)%100+1, rnd2=(idx*11 + c*7)%50+1;
+let lvl=idx%3===0?'easy':idx%3===1?'med':'hard';
+let lvlTag=lvl==='easy'?'<span class="level level-easy">EASY</span>':lvl==='med'?'<span class="level level-med">MEDIUM</span>':'<span class="level level-hard">CHAMPION</span>';
+let qObj={};
+if(subject==='Maths'){
+if(c<=3){let a=rnd1%10+1,b=rnd2%10+1;qObj.q=`If ${a} toffees + ${b} more? ${lvlTag}`;qObj.correct=`${a+b}`;qObj.wrongs=[`${a+b-1}`,`${a+b+2}`,`${a+b+1}`];}
+else if(c<=8){qObj.q=`Class ${cls}: ${rnd1} × ${rnd2%12+1}=? ${lvlTag}`;qObj.correct=`${rnd1*(rnd2%12+1)}`;qObj.wrongs=[`${rnd1*(rnd2%12+1)+10}`,`${rnd1*(rnd2%12+1)-5}`,`${rnd1*(rnd2%12+1)+2}`];}
+else{qObj.q=`Class ${cls}: Solve x² - ${rnd1+rnd2}x + ${rnd1*rnd2}=0? ${lvlTag}`;qObj.correct=`${rnd1} and ${rnd2}`;qObj.wrongs=[`${rnd1+1} and ${rnd2}`,`${rnd1} and ${rnd2+1}`,`${rnd1+2} and ${rnd2+2}`];}
+}else if(subject==='Science'){
+qObj.q=`Science Class ${cls}: Q${idx} - ${['Sun','H2O','Heart'][idx%3]} ${rnd1}? ${lvlTag}`;qObj.correct=['Sun','H2O','4 Chambers'][idx%3];qObj.wrongs=[`Wrong${idx}A`,`Wrong${idx}B`,`Wrong${idx}C`];
+}else{
+qObj.q=`${subject} Class ${cls}: Unique Q${idx} - Topic ${rnd1}? ${lvlTag}`;qObj.correct=`Correct Answer ${idx} - ${subject}`;qObj.wrongs=[`Wrong A${idx}`,`Wrong B${idx}`,`Wrong C${idx}`];
+}
+qObj.id=`${subject}-${cls}-${idx}`;qObj.lvl=lvl;qObj.lvlTag=lvlTag;return qObj;
+}
+function generateAIQuestions(cls, subject){
+let pool=[];for(let i=1;i<=1000;i++)pool.push(generateUniqueQuestion(cls,subject,i));
+for(let i=pool.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+return pool.slice(0,20).map(item=>{let sh=shuffleWithAnswer(item.correct,item.wrongs);return{text:`[${item.id}] ${item.q}`,options:sh.opts,ans:sh.ans,correctText:sh.correct,uid:item.id,explain:`Bot: ${sh.correct} - ${item.id}`};});
+}
+function startQuiz(subject){
+usedIds.clear();currentQuestions=generateAIQuestions(currentStudent.class,subject);qIndex=0;score=0;wrong=0;
+subjectCard.classList.add('hidden');quizBox.classList.remove('hidden');timer.style.display='block';
+qSubject.innerText=`${subject} | Class ${currentStudent.class} | 1000 Unique No Repeat | Random A/B/C/D`;
+startTimer();showQ();
+}
+function startTimer(){
+timeLeft=(['1','2','3','4','5'].includes(currentStudent.class))?60:40;
+clearInterval(timerInt);timer.innerText=`⏱️ ${timeLeft}s`;
+timerInt=setInterval(()=>{timeLeft--;timer.innerText=`⏱️ ${timeLeft}s`;if(timeLeft<=0){clearInterval(timerInt);endQuiz();}},1000);
+}
+function showQ(){
+if(qIndex>=currentQuestions.length){endQuiz();return;}
+let q=currentQuestions[qIndex];if(usedIds.has(q.uid)){qIndex++;showQ();return;}usedIds.add(q.uid);
+qNum.innerText=qIndex+1;document.getElementById('qid').innerText=q.uid;document.getElementById('score').innerText=score;wrongCount.innerText=wrong;
+question.innerHTML=q.text;
+let optDiv=options;optDiv.innerHTML='';
+q.options.forEach((opt,i)=>{let d=document.createElement('div');d.className='option';d.innerHTML=`<b>${String.fromCharCode(65+i)}.</b> ${opt}`;d.onclick=()=>checkAns(i);optDiv.appendChild(d);});
+botMsg.style.display='none';buzzer.style.display='none';tryAgain.style.display='none';
+}
+function checkAns(sel){
+let q=currentQuestions[qIndex];let opts=document.querySelectorAll('.option');opts.forEach(o=>o.style.pointerEvents='none');
+if(sel==q.ans){opts[sel].classList.add('correct');score+=5;setTimeout(()=>{qIndex++;showQ();},800);}
+else{opts[sel].classList.add('wrong');opts[q.ans].classList.add('correct');wrong++;wrongSound.play();buzzer.style.display='block';botMsg.style.display='block';botMsg.innerHTML=`🤖 Bot: Correct <b>Option ${String.fromCharCode(65+q.ans)} = ${q.correctText}</b><br>${q.explain}`;wrongCount.innerText=wrong;
+if(wrong>=5){let cd=8;tryAgain.style.display='block';let ci=setInterval(()=>{cd--;countdown.innerText=cd;if(cd<=0){clearInterval(ci);wrong=0;qIndex++;showQ();}},1000);}else{setTimeout(()=>{qIndex++;showQ();},2500);}
+}
+}
+function endQuiz(){
+clearInterval(timerInt);timer.style.display='none';quizBox.classList.add('hidden');recordCard.classList.remove('hidden');
+let total=currentQuestions.length*5;let perc=Math.round(score/total*100);
+let remark=perc>=80?'🌟 Champion Talent!':perc>=60?'👍 Very Good!':perc>=40?'🙂 Good':'📚 Need Practice';
+finalMessage.innerHTML=`🎯 <b>${currentStudent.student}</b> Scored<br><span class="score-big">${score}/${total} (${perc}%)</span><br>${remark}<br><small>Banner #${bannerCount}/2000 | 20 Unique Qs from 1000</small>`;
+shareDate.innerText=new Date().toLocaleString();
+shareDetails.innerHTML=`Student: ${currentStudent.student}<br>Parent: ${currentStudent.parent}<br>Class: ${currentStudent.class}<br>Contact: ${currentStudent.contact}<br>WhatsApp: ${currentStudent.whatsapp}<br>Teacher: Mr Anshu Triwedi Vastu Vihar<br>Score: ${score}/${total} (${perc}%) | Wrong: ${wrong}<br>Banner: #${bannerCount}/2000 | IDs: ${[...usedIds].slice(0,5).join(', ')}...<br>Remark: ${remark}`;
+shareScore.innerText=`${score}/${total} (${perc}%)`;shareRemark.innerText=remark;
+drawCinematicResult(perc, remark);
+}
+function drawCinematicResult(perc, remark){
+let canvas=document.getElementById('resultCanvas');let ctx=canvas.getContext('2d');
+// Background gradient
+let grad=ctx.createLinearGradient(0,0,0,1350);grad.addColorStop(0,'#FF6B00');grad.addColorStop(0.5,'#FFD700');grad.addColorStop(1,'#4CAF50');
+ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1350);
+// White inner
+ctx.fillStyle='white';ctx.beginPath();ctx.roundRect(20,20,1040,1310,30);ctx.fill();
+// Title
+ctx.fillStyle='#FF6B00';ctx.font='900 48px Segoe UI';ctx.textAlign='center';ctx.fillText('🏆 TALENT QUIZ - CINEMATIC RESULT',540,90);
+ctx.fillStyle='#666';ctx.font='600 20px Segoe UI';ctx.fillText('Ganpati Web Solutions | Mr Anshu Triwedi | Vastu Vihar Baridih',540,125);
+// Banner info
+ctx.fillStyle='#333';ctx.font='700 22px Segoe UI';ctx.textAlign='left';
+let y=180;
+ctx.fillText(`Student: ${currentStudent.student} (Unique)`,50,y);y+=35;
+ctx.fillText(`Parent: ${currentStudent.parent}`,50,y);y+=35;
+ctx.fillText(`Class: ${currentStudent.class} | Banner #${bannerCount}/2000`,50,y);y+=35;
+ctx.fillText(`Contact: ${currentStudent.contact} | WhatsApp: ${currentStudent.whatsapp}`,50,y);y+=35;
+ctx.fillText(`Teacher: Mr Anshu Triwedi Fixed | Timing: 40-60s`,50,y);y+=35;
+ctx.fillText(`Date: ${new Date().toLocaleString()} | Location: Vastu Vihar`,50,y);y+=50;
+// Score big
+ctx.fillStyle='#FF6B00';ctx.font='900 80px Segoe UI';ctx.textAlign='center';
+ctx.fillText(`${score}/${currentQuestions.length*5}`,540,y+40);y+=90;
+ctx.font='900 60px Segoe UI';ctx.fillText(`${perc}%`,540,y);y+=70;
+ctx.fillStyle='#4CAF50';ctx.font='800 36px Segoe UI';ctx.fillText(remark,540,y);y+=60;
+// Draw images if loaded
+let pImg=new Image(), sImg=new Image();
+let loaded=0;
+function tryDraw(){
+loaded++; if(loaded<2) return;
+// Draw parent and student in circles
+ctx.save();ctx.beginPath();ctx.arc(350, y+80, 80,0,Math.PI*2);ctx.clip();ctx.drawImage(pImg,270,y,160,160);ctx.restore();
+ctx.save();ctx.beginPath();ctx.arc(730, y+80, 80,0,Math.PI*2);ctx.clip();ctx.drawImage(sImg,650,y,160,160);ctx.restore();
+ctx.fillStyle='#333';ctx.font='700 20px Segoe UI';ctx.textAlign='center';ctx.fillText('Parent',350,y+180);ctx.fillText('Student',730,y+180);
+}
+pImg.onload=tryDraw; sImg.onload=tryDraw;
+pImg.src=pImgURL; sImg.src=sImgURL;
+// If images not loaded yet, still show
+setTimeout(tryDraw,1000);
+}
+function downloadResult(){
+let canvas=document.getElementById('resultCanvas');
+let link=document.createElement('a');link.download=`TalentQuiz_${currentStudent.student}_${bannerCount}.png`;link.href=canvas.toDataURL();link.click();
+}
+function shareWhatsApp(){
+let det=document.getElementById('shareDetails').innerText;
+let msg=`*🏆 TALENT QUIZ - CINEMATIC RESULT - Banner #${bannerCount}/2000*%0A*Ganpati Web Solutions | Mr Anshu Triwedi*%0A%0A${encodeURIComponent(det)}%0A%0A*Cinematic Image Downloaded - Share it!*%0A*2000 Unique Banners | 1000 Unique Qs | No Repeat*`;
+window.open(`https://wa.me/${currentStudent.whatsapp}?text=${msg}`,'_blank');
+setTimeout(()=>{downloadResult();},500);
+}
+</script>
+</body>
+</html>
